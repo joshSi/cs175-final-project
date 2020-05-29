@@ -33,15 +33,15 @@ To better understand the weather report:
 "NAME"                  = location's name
 "TEMP"                  = temperature
 "TEMP_ATTRIBUTES"
-"DEWP"
+"DEWP"                  = dewpoint temperature
 "DEWP_ATTRIBUTES
 "SLP"                   = sea level pressure
 "SLP_ATTRIBUTES"
-"STP"
+"STP"                   = station pressure
 "STP_ATTRIBUTES"
 "VISIB"                 = visibility
 "VISIB_ATTRIBUTES"
-"WDSP"                  = wind speec
+"WDSP"                  = wind speed
 "WDSP_ATTRIBUTES"
 "MXSPD","GUST"
 "MAX"
