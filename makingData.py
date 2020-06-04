@@ -1,55 +1,69 @@
 import numpy as np 
 import pandas as pd
-
+import os
+import matplotlib.pyplot as plt 
 # Load the data
 my_data = pd.read_csv('us-counties.csv', sep=',')
 
-# Get the unique combos of County and State
-all_county_state = my_data["county"] + ", " +my_data["state"] + ", No"
-county_state = all_county_state.unique()
 
-# Get the list of dates
-dates = my_data["date"].unique()
-#dates = np.concatenate((["County, State"], dates))
+def getListOfFiles(dirName):
+    # create a list of file and sub directories 
+    # names in the given directory 
+    listOfFile = os.listdir(dirName)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath)
+        else:
+            allFiles.append(fullPath)
+    return allFiles
+
+files = getListOfFiles("staggered_virus_and_weather_data")
+first_file = files[0]
+
+def getData(fileName):
+    file_data = pd.read_csv(fileName, sep=',')
+    del file_data["Station ID"]
+    del file_data["Virus Date"]
+    del file_data["Weather Date"]
+    del file_data["(file)name"]
+    del file_data["County"]
+    del file_data["State"]
+    del file_data["Deaths"]
+    del file_data["Temp. Attributes"]
+    del file_data["Rain Attributes"]
+    growth = np.zeros((file_data.shape[0]-7, 1))
+    for i in range(file_data.shape[0]-7):
+        g = (file_data["Total Cases"].iloc[i+7] - file_data["Total Cases"].iloc[i])/file_data["Total Cases"].iloc[i+7]
+        growth[i] = (round(g, 4))
+    #print(growth.shape)
+    #print(file_data.shape)
+    file_data = file_data[:-7]
+    #print(file_data.shape)
+    file_data.insert(7, "Growth %", growth, True) 
+    return file_data
 
 
-# Table consisting of [weather conditions][restriction lvl][case growth rate]
-final_result = np.zeros((1,1))
+final_data = getData(files[0])
+for i in range(1,len(files)-1):
+    file_name = files[i]
+    temp_data = getData(file_name)
+    final_data = pd.concat([final_data, temp_data])
 
-np.savetxt("counties.csv", county_state, fmt='%s')
-np.savetxt("dataset.csv", final_result, fmt='%s')
+#print(final_data.shape)
+del final_data["Total Cases"]
+final_data.to_csv("final.csv")
+
 
 '''
-Want to make table of:
- [lat][long][elevation][temp][sea level pressure][visibility][wind speed][prcp][humidity][etc.][level of restrictions][case growth]
+plt.scatter(final_data["Temperature"], final_data["Growth %"])
+plt.xlabel("Temp")
+plt.ylabel("Growth")
+plt.show()'''
 
-To better understand the weather report:
-
-"STATION"               = location ID
-"DATE"                  = date
-"LATITUDE"              = location's lat
-"LONGITUDE"             = location's long
-"ELEVATION"             = location's elevation
-"NAME"                  = location's name
-"TEMP"                  = temperature
-"TEMP_ATTRIBUTES"
-"DEWP"                  = dewpoint temperature
-"DEWP_ATTRIBUTES
-"SLP"                   = sea level pressure
-"SLP_ATTRIBUTES"
-"STP"                   = station pressure
-"STP_ATTRIBUTES"
-"VISIB"                 = visibility
-"VISIB_ATTRIBUTES"
-"WDSP"                  = wind speed
-"WDSP_ATTRIBUTES"
-"MXSPD","GUST"
-"MAX"
-"MAX_ATTRIBUTES"
-"MIN"
-"MIN_ATTRIBUTES"    
-"PRCP"                  = precipitation
-"PRCP_ATTRIBUTES"
-"SNDP"                  = snow depth
-"FRSHTT"                = prediction for fog, rain, snow, hail, thunder, tornado
-'''
+#plt.hist(final_data["Growth %"], bins = 40)
+#plt.show()
