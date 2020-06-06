@@ -38,7 +38,7 @@ def getData(fileName):
     del file_data["Rain Attributes"]
     growth = np.zeros((file_data.shape[0]-7, 1))
     for i in range(file_data.shape[0]-7):
-        g = (file_data["Total Cases"].iloc[i+7] - file_data["Total Cases"].iloc[i])/file_data["Total Cases"].iloc[i+7]
+        g = (file_data["Total Cases"].iloc[i+7] - file_data["Total Cases"].iloc[i])/file_data["Total Cases"].iloc[i+7]*100
         growth[i] = (round(g, 4))
     #print(growth.shape)
     #print(file_data.shape)
