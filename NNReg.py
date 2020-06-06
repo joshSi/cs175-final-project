@@ -7,39 +7,36 @@ from sklearn.neighbors import KNeighborsRegressor as KNN
 from sklearn.neural_network import MLPRegressor
 from sklearn.feature_selection import VarianceThreshold
 import mltools as ml
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import train_test_split
 
-def MSE(Y, Yhat):
-    return np.sum((Y-Yhat)**2)/Y.shape[0]
-
+def MSE(Ytrue, Yhat):
+    return np.sum((Ytrue-Yhat)**2)/Ytrue.shape[0]
 
 data = np.genfromtxt('final.csv', delimiter = ",")
 
 #data = np.delete(data, 6, 1)   # Rain
-#data = np.delete(data, 5, 1)   # Wind Speed
+data = np.delete(data, 5, 1)   # Wind Speed
 #data = np.delete(data, 4, 1)   # Temperature
-#data = np.delete(data, 3, 1)   # Elevation
-#data = np.delete(data, 2, 1)   # Longitude
+data = np.delete(data, 3, 1)   # Elevation
+data = np.delete(data, 2, 1)   # Longitude
 #data = np.delete(data, 1, 1)   # Latitude
 
-X = data[1:data.shape[0]-1, 1:4]
-Y = data[1:data.shape[0]-1, 4:5]
-print(X)
-print(Y)
-tr = int(X.shape[0]*0.8)
-te = X.shape[0] - tr
-Xtr = X[0:tr]
-Xte = X[tr:tr+te]
-Ytr = Y[0:tr]*100
-Yte = Y[tr:tr+te]*100
+
+X = data[1:data.shape[0]-1, 1:data.shape[1]-1]
+Y = data[1:data.shape[0]-1, data.shape[1]-1:data.shape[1]]/100
+
+Xtr, Xte, Ytr, Yte = train_test_split(X, Y, test_size=0.2, random_state = 1)
 
 
 Xtr, params  = ml.rescale(Xtr)
 Xte, _  = ml.rescale(Xte, params)
 
-print(Xtr.shape, Ytr.shape, Xte.shape, Yte.shape)
+#print(Xtr.shape, Ytr.shape, Xte.shape, Yte.shape)
 
-hidden_layers = range(1, 5, 1)
-nodes_nums = range(1, 5, 1)
+hidden_layers = range(2, 8, 1)
+nodes_nums = range(2, 8, 1)
 
 errors_tr = np.zeros((len(hidden_layers),len(nodes_nums)))
 errors_te = np.zeros((len(hidden_layers),len(nodes_nums)))
@@ -51,34 +48,24 @@ for i in range(len(hidden_layers)):
         for a in range(i):
             nodes_num.append(nodes_nums[j])
         params = nodes_num
-        
-        #print("params:", params)
-
-        nnregr = MLPRegressor(hidden_layer_sizes=params,  random_state=1, max_iter=1000, 
-                             tol = 1e-20, solver = "sgd", activation="identity",
-                             learning_rate="adaptive", learning_rate_init=0.001, alpha = 2.5,
-                             warm_start = True)
+        nnregr = MLPRegressor(hidden_layer_sizes=params,activation = "tanh", alpha = 0.2, learning_rate="invscaling", max_iter=300, 
+                 learning_rate_init=0.07,  warm_start=True, early_stopping=True)
         nnregr.fit(Xtr, Ytr.ravel())
         Yhat_te = nnregr.predict(Xte)
         Yhat_tr = nnregr.predict(Xtr)
-        #print(Yhat_tr-Ytr)
-        errors_tr[i,j] = MSE(Yhat_tr, Ytr.ravel())
-        errors_te[i,j] = MSE(Yhat_te, Yte.ravel())
-        print(errors_te[i,j])
-        print(errors_tr[i,j])
-        print(nnregr.get_params())
-        print()
-
-print("errors:")
-print("----------------------------")
-print(errors_te)
-print()
-print(errors_tr)
-print("----------------------------")
-
+        try :
+            errors_tr[i,j] = round(mean_squared_error(Ytr.ravel(),Yhat_tr),4)
+            errors_te[i,j] = round(mean_squared_error(Yte.ravel(),Yhat_te), 4)
+            print(errors_te[i,j])
+            print(errors_tr[i,j])
+            print(nnregr.get_params())
+            print()
+        except ValueError:
+            continue
 
 # Plot the training AUC heatmap
 f, ax = plt.subplots(1, 2, figsize=(8, 6))
+f.suptitle("Errors of neural networks with varying hidden layers and node numbers \n for Temperature, Rain and Latitude", fontsize=12)
 cax = ax[0].matshow(errors_tr, interpolation="nearest")
 f.colorbar(cax)
 ax[0].set_xticklabels([0]+list(hidden_layers))
