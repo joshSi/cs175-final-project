@@ -16,7 +16,7 @@ from .utils import toIndex
 class classifier:
 
   def __init__(self, *args, **kwargs):
-    """Constructor for abstract base class for various classifiers. 
+    """Constructor for abstract base class for various classifiers.
 
     This class implements methods that generalize to different classifiers.
     Optional arguments X,Y,... call train(X,Y,...) to initialize the model
@@ -28,7 +28,7 @@ class classifier:
 
 
   def __call__(self, *args, **kwargs):
-    """Provides syntatic sugar for prediction; calls "predict".  """ 
+    """Provides syntatic sugar for prediction; calls "predict".  """
     return self.predict(*args, **kwargs)
 
 
@@ -65,7 +65,7 @@ class classifier:
   def err(self, X, Y):
     """This method computes the error rate on a data set (X,Y)
 
-    Args: 
+    Args:
         X (arr): M,N array of M data points with N features each
         Y (arr): M, or M,1 array of target class values for each data point
 
@@ -78,12 +78,12 @@ class classifier:
 
 
   def nll(self, X, Y):
-    """Compute the (average) negative log-likelihood of the soft predictions 
+    """Compute the (average) negative log-likelihood of the soft predictions
 
     Using predictSoft, normalizes and inteprets as conditional probabilities to compute
       (1/M) \sum_i log Pr[ y^{(i)} | f, x^{(i)} ]
 
-    Args: 
+    Args:
         X (arr): M,N array of M data points with N features each
         Y (arr): M, or M,1 array of target class values for each data point
 
@@ -91,7 +91,7 @@ class classifier:
         float: Negative log likelihood of the predictions
     """
     M,N = X.shape
-    P = arr( self.predictSoft(X) )
+    P = np.asarray( self.predictSoft(X) )
     P /= np.sum(P, axis=1, keepdims=True)       # normalize to sum to one
     Y = toIndex(Y, self.classes)
     return - np.mean( np.log( P[ np.arange(M), Y ] ) ) # evaluate
@@ -101,14 +101,14 @@ class classifier:
   def auc(self, X, Y):
     """Compute the area under the roc curve on the given test data.
 
-    Args: 
+    Args:
         X (arr): M,N array of M data points with N features each
         Y (arr): M, or M,1 array of target class values for each data point
 
     Returns:
         float: Area under the ROC curve
 
-    This method only works on binary classifiers. 
+    This method only works on binary classifiers.
     """
     if len(self.classes) != 2:
       raise ValueError('This method can only supports binary classification ')
@@ -144,8 +144,8 @@ class classifier:
 
   def confusion(self, X, Y):
     """Estimate the confusion matrix (Y x Y_hat) from test data.
-    
-    Args: 
+
+    Args:
         X (arr): M,N array of M data points with N features each
         Y (arr): M, or M,1 array of target class values for each data point
 
@@ -163,18 +163,18 @@ class classifier:
   def roc(self, X, Y):
     """Compute the receiver operating charateristic curve on a data set.
 
-    Args: 
+    Args:
         X (arr): M,N array of M data points with N features each
         Y (arr): M, or M,1 array of target class values for each data point
 
     Returns:
-        tuple : (fpr,tpr,tnr) where 
+        tuple : (fpr,tpr,tnr) where
                 fpr = false positive rate (1xN numpy vector)
                 tpr = true positive rate (1xN numpy vector)
                 tnr = true negative rate (1xN numpy vector)
 
-    This method is only defined for binary classifiers. 
-    Plot fpr vs. tpr to see the ROC curve. 
+    This method is only defined for binary classifiers.
+    Plot fpr vs. tpr to see the ROC curve.
     Plot tpr vs. tnr to see the sensitivity/specificity curve.
     """
     if len(self.classes) > 2:
@@ -232,7 +232,7 @@ class regressor:
 
 
   def __call__(self, *args, **kwargs):
-    """Syntatic sugar for prediction; same as "predict".  """ 
+    """Syntatic sugar for prediction; same as "predict".  """
     return self.predict(*args, **kwargs)
 
 
@@ -245,7 +245,7 @@ class regressor:
 
     Computes
       (1/M) \sum_i | f(x^{(i)}) - y^{(i)} |
-    of a regression model f(.) on test data X and Y. 
+    of a regression model f(.) on test data X and Y.
 
     Args:
       X (arr): M x N array that contains M data points with N features
@@ -262,8 +262,8 @@ class regressor:
     """Computes the mean squared error
 
     Computes
-      (1/M) \sum_i ( f(x^{(i)}) - y^{(i)} )^2 
-    of a regression model f(.) on test data X and Y. 
+      (1/M) \sum_i ( f(x^{(i)}) - y^{(i)} )^2
+    of a regression model f(.) on test data X and Y.
 
     Args:
       X (arr): M x N array that contains M data points with N features
@@ -278,10 +278,10 @@ class regressor:
 
   def rmse(self, X, Y):
     """Computes the root mean squared error
-  
+
     Computes
       sqrt( f.mse(X,Y) )
-    of a regression model f(.) on test data X and Y. 
+    of a regression model f(.) on test data X and Y.
 
     Args:
       X (arr): M x N array that contains M data points with N features

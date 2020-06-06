@@ -16,7 +16,6 @@ def MSE(Y, Yhat):
 
 data = np.genfromtxt('final.csv', delimiter = ",")
 
-shuffle_rows(data[1:data.shape[0]-1], [0,data.shape[0]-1])
 X = data[1:data.shape[0]-1, 1:7]
 Y = data[1:data.shape[0]-1, 7:8]
 tr = int(X.shape[0]*0.8)

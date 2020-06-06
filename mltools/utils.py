@@ -54,7 +54,7 @@ def to1ofK(Y, values=None):
     values = list(values) if values is not None else list(np.unique(Y))
     C = len(values)
     flat_Y = Y.flatten()
-
+   
     index = []
     for l in flat_Y:
         index.append(values.index(l))
@@ -80,12 +80,12 @@ def from1ofK(Y, values=None):
         Y in single row/col form.
     """
     #return Y.argmax(1) if values is None else twod([values[i] for i in Y.argmax(1)]).T
-    return Y.argmax(1) if values is None else arr(values)[Y.argmax(1)];
+    return Y.argmax(1) if values is None else arr(values)[Y.argmax(1)]; 
 
 
 def toIndex(Y, values=None):
     """
-    Function that converts discrete value Y into [0 .. K - 1] (index)
+    Function that converts discrete value Y into [0 .. K - 1] (index) 
     representation; i.e.: toIndex([4 4 1 1 2 2], [1 2 4]) = [2 2 0 0 1 1].
 
     Parameters
@@ -150,7 +150,7 @@ def shuffleData(X, Y=None):
     -------
     X,Y  :  (tuple of) numpy arrays of shuffled features and targets
             only returns X (not a tuple) if Y is not present or None
-
+    
     Ex:
     X2    = shuffleData(X)   : shuffles the rows of the data matrix X
     X2,Y2 = shuffleData(X,Y) : shuffles rows of X,Y, preserving correspondence
@@ -185,7 +185,7 @@ def splitData(X, Y=None, train_fraction=0.80):
     to_return : (Xtr,Xte,Ytr,Yte) or (Xtr,Xte)
         A tuple containing the following arrays (in order): training
         data from X, testing data from X, training labels from Y
-        (if Y contains data), and testing labels from Y (if Y
+        (if Y contains data), and testing labels from Y (if Y 
         contains data).
     """
     nx,dx = twod(X).shape
@@ -226,7 +226,7 @@ def crossValidate(X, Y=None, K=5, i=0):
     start = int(round( float(nx)*i/K ))
     end   = int(round( float(nx)*(i+1)/K ))
 
-    Xte   = X[start:end,:]
+    Xte   = X[start:end,:] 
     Xtr   = np.vstack( (X[0:start,:],X[end:,:]) )
     to_return = (Xtr,Xte)
 
@@ -249,14 +249,14 @@ def crossValidate(X, Y=None, K=5, i=0):
 
 def bootstrapData(X, Y=None, n_boot=None):
     """
-    Bootstrap resample a data set (with replacement):
+    Bootstrap resample a data set (with replacement): 
     draw data points (x_i,y_i) from (X,Y) n_boot times.
 
     Parameters
     ----------
     X : MxN numpy array of data points to be resampled.
     Y : Mx1 numpy array of labels associated with each datum (optional)
-    n_boot : int, number of samples to draw (default: N)
+    n_boot : int, number of samples to draw (default: M)
 
     Returns
     -------
@@ -264,18 +264,12 @@ def bootstrapData(X, Y=None, n_boot=None):
     If Y is not present or None, returns only Xboot (non-tuple)
     """
     nx,dx = twod(X).shape
-    Y = Y.flatten()
     if n_boot is None: n_boot = nx
-
     idx = np.floor(np.random.rand(n_boot) * nx).astype(int)
-    X = X[idx,:]
-
-    ny = len(Y)
-    assert ny > 0, 'bootstrapData: Y must contain data'
-    assert nx == ny, 'bootstrapData: X and Y should have the same length'
-    Y = Y[idx]
-
-    return (X,Y)
+    if Y is None: return X[idx,:]
+    Y = Y.flatten()
+    assert nx == len(Y), 'bootstrapData: X and Y should have the same length'
+    return (X[idx,:],Y[idx])
 
 
 

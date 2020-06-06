@@ -171,6 +171,9 @@ def data_mouse():
 		fig.canvas.draw()
 
 	fig.canvas.mpl_connect('button_press_event',on_click)
-	plt.show()
+        inter=plt.isinteractive(); hld=plt.ishold();
+        plt.ioff(); plt.hold(True); plt.show();
+        if inter: plt.ion();
+        if not hld: plt.hold(False);
 	return X,Y
 
