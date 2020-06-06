@@ -31,6 +31,7 @@ coef1 = sorted(coef.items(), key=lambda x: x[1], reverse=True)
 for (f,c) in coef1:
     #print("Feature:", f, "\nCoef:", c)
     pass
+ranking1 = ["Latitude", "Temperature", "Rain", "Longitude", "Wind Speed", "Elevation"]
 '''
 Feature: Latitude 
 Coef: 0.02152277460760391
@@ -51,7 +52,7 @@ Coef: 1.2414793809479373e-05
 # Higher the number, higher the relation
 data1 = pd.read_csv("final.csv", sep = ",")
 cor = data1.corr()
-
+ranking2 = ["Temperature", "Longitude", "Rain", "Wind Speed", "Elevation", "Latitude"]
 '''
                 Latitude    Longitude  Elevation  Temperature  Windspeed   Rain     Growth %
 Latitude        1.000000     0.281789   0.091905    -0.756511  -0.001808 -0.057583 -0.002971
@@ -61,4 +62,33 @@ Temperature    -0.756511    -0.266655  -0.119441     1.000000  -0.015703  0.0011
 Windspeed      -0.001808    -0.040929   0.144285    -0.015703   1.000000 -0.023887 -0.017797
 Rain           -0.057583    -0.120775   0.048483     0.001107  -0.023887  1.000000  0.051253
 Growth %       -0.002971     0.053067  -0.009103    -0.177541  -0.017797  0.051253  1.000000
+'''
+
+# Finding variance of features
+variance = X.var(axis = 0)
+
+for i in range(6):
+    print("Feature", features[i], "\nVariance:", round(variance[i],3))
+ranking3 = ["Temperature", "Rain", "Latitude", "Elevation", "Wind Speed", "Longitude"]
+
+'''
+Feature Latitude 
+Variance: 474.218
+Feature Longitude 
+Variance: 21.512
+Feature Elevation 
+Variance: 266.062
+Feature Temperature 
+Variance: 98302.3
+Feature WindSpeed 
+Variance: 135.293
+Feature Rain 
+Variance: 56032.569
+'''
+
+'''
+Out of the 3 rankings, Temperature, Rain and Latitude seem to be ranking high. 
+It is possible that these 3 are the features that affect the growth % the most.
+We will try training on these 3 features alone, the other 3 features and then on all features
+and make comparison.
 '''

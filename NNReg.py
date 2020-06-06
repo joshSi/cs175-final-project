@@ -30,9 +30,8 @@ Yte = Y[tr:tr+te]
 
 print(Xtr.shape, Ytr.shape, Xte.shape, Yte.shape)
 
-
-hidden_layers = range(1, 5, 1)
-nodes_nums = range(1, 5, 1)
+hidden_layers = range(1, 8, 1)
+nodes_nums = range(1, 8, 1)
 
 errors_tr = np.zeros((len(hidden_layers),len(nodes_nums)))
 errors_te = np.zeros((len(hidden_layers),len(nodes_nums)))
