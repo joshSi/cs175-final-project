@@ -23,23 +23,13 @@ data = np.genfromtxt('final.csv', delimiter = ",")
 #data = np.delete(data, 6, 1)   # Rain
 #data = np.delete(data, 5, 1)   # Wind Speed
 #data = np.delete(data, 4, 1)   # Temperature
-data = np.delete(data, 3, 1)   # Elevation
-data = np.delete(data, 2, 1)   # Longitude
-data = np.delete(data, 1, 1)   # Latitude
+#data = np.delete(data, 3, 1)   # Elevation
+#data = np.delete(data, 2, 1)   # Longitude
+#data = np.delete(data, 1, 1)   # Latitude
 
 X = data[1:data.shape[0]-1, 1:data.shape[1]-1]
 Y = data[1:data.shape[0]-1, data.shape[1]-1:data.shape[1]]/100
-
 Xtr, Xte, Ytr, Yte = train_test_split(X, Y, test_size=0.2, random_state = 1)
-
-
-
-print("data:",data.shape)
-print("x:", X.shape)
-print("y:", Y.shape)
-print(data)
-print(X)
-print(Y)
 
 def getErrors(Xtr, Ytr, Xte, Yte, degrees, mono):
     # Given training and testing sets, gives errors on degrees of 1 to 3
@@ -73,6 +63,8 @@ def getErrors(Xtr, Ytr, Xte, Yte, degrees, mono):
         errors_tr.append(mse(Ytr, Yhat_tr))
     return (errors_tr, errors_te)
 
+# Training and plotting MSE
+'''
 degrees = np.arange(1,4)
 err_cross_tr, err_cross_te = getErrors(Xtr, Ytr, Xte, Yte, degrees, False)
 err_tr, err_te             = getErrors(Xtr, Ytr, Xte, Yte, degrees, True)
@@ -86,17 +78,16 @@ plt.xlabel("Degrees")
 plt.ylabel("MSE")
 plt.legend(loc="upper left")
 plt.show()
-
-
-
-
-'''
-All features with degree 1: err_tr = 0.064, err_te = 0.017
-
 '''
 
-lin = LinearRegression().fit(Xtr, Ytr)
-Yhat_te = lin.predict(Xte)
-Yhat_tr = lin.predict(Xtr)
-print(int(np.sum(abs(Yhat_tr-Ytr))**2)/Ytr.shape[0])
-print(int(np.sum(abs(Yhat_te-Yte))**2)/Yte.shape[0])
+
+
+
+
+
+def trainAndPredictCases(toPred):
+    poly = PolyFeat(degree = 3, interaction_only=True)
+    XtrP = poly.fit_transform(Xtr)
+    lin = LinearRegression().fit(XtrP, Ytr)
+    toPred = poly.fit_transform(toPred)
+    return lin.predict(toPred)

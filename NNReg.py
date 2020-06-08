@@ -14,27 +14,25 @@ from sklearn.model_selection import train_test_split
 def MSE(Ytrue, Yhat):
     return np.sum((Ytrue-Yhat)**2)/Ytrue.shape[0]
 
+
+# Preparing data 
 data = np.genfromtxt('final.csv', delimiter = ",")
 
 #data = np.delete(data, 6, 1)   # Rain
-data = np.delete(data, 5, 1)   # Wind Speed
+#data = np.delete(data, 5, 1)   # Wind Speed
 #data = np.delete(data, 4, 1)   # Temperature
-data = np.delete(data, 3, 1)   # Elevation
-data = np.delete(data, 2, 1)   # Longitude
+#data = np.delete(data, 3, 1)   # Elevation
+#data = np.delete(data, 2, 1)   # Longitude
 #data = np.delete(data, 1, 1)   # Latitude
-
 
 X = data[1:data.shape[0]-1, 1:data.shape[1]-1]
 Y = data[1:data.shape[0]-1, data.shape[1]-1:data.shape[1]]/100
-
 Xtr, Xte, Ytr, Yte = train_test_split(X, Y, test_size=0.2, random_state = 1)
-
-
 Xtr, params  = ml.rescale(Xtr)
 Xte, _  = ml.rescale(Xte, params)
 
-#print(Xtr.shape, Ytr.shape, Xte.shape, Yte.shape)
-
+# Evaluating performance of models
+'''
 hidden_layers = range(2, 8, 1)
 nodes_nums = range(2, 8, 1)
 
@@ -62,8 +60,10 @@ for i in range(len(hidden_layers)):
             print()
         except ValueError:
             continue
+'''
 
 # Plot the training AUC heatmap
+'''
 f, ax = plt.subplots(1, 2, figsize=(8, 6))
 f.suptitle("Errors of neural networks with varying hidden layers and node numbers \n for Temperature, Rain and Latitude", fontsize=12)
 cax = ax[0].matshow(errors_tr, interpolation="nearest")
@@ -80,8 +80,16 @@ ax[1].set_title("Testing Error")
 ax[1].set_xlabel("Hidden Layers")
 ax[1].set_ylabel("Number of Nodes")
 plt.show()
+'''
 
-
-
-
+def traingAndPredictCases(toPredict):
+    nodes_num=[]
+    for i in range(3):
+        nodes_num.append(4)
+    params = nodes_num
+    nnregr = MLPRegressor(hidden_layer_sizes=params,activation = "tanh", alpha = 0.2, learning_rate="invscaling", max_iter=300, 
+                 learning_rate_init=0.07,  warm_start=True, early_stopping=True)
+    nnregr.fit(Xtr, Ytr.ravel())
+    
+    return nnregr.predict(toPredict)
 
