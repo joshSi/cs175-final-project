@@ -2,14 +2,22 @@
 
 Team: Jose Maldonado, Nomin Amgalan, Joshua Si
 
+`src` directory contains source code
+
+`Graphs` contains our graphs from comparing data and our models
+
+`Data` contains all of our compiled, processed, and extracted data (although ultimately we use `final.csv` in the demo)
+
 ## Running Code:
 
 Make sure [Python 3](https://www.python.org/downloads/) is installed
 
 To ensure all requirements are installed, run:
+
 ```pip3 install -r requirements.txt```
 
 To run our sample source, open predictingCases.py:
+
 ```python3 predictingCases```
 
 Proceed to enter input, and it will return predictions on COVID-19 growth rates using our Neural Network and Linear Regression models.
