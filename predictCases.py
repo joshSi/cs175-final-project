@@ -10,6 +10,7 @@ import NNReg
 import LinearReg
 import numpy as np 
 
+# States
 state_option = {
     1: "California", 2: "Maryland", 3: "New Jersey", 4: "Illinois",
     5: "Ohio", 6: "Texas", 7: "Colorado", 8: "New York", 9: "Virginia",
@@ -19,6 +20,7 @@ state_option = {
     22: "Utah", 23: "Delaware"
     }
 
+# States with multiple county options
 statesMultCounty = [1,2,3,4,6,8,9,10,13,15]
 
 NY_counties = {
@@ -54,6 +56,8 @@ VA_counties = {
 MI_counties = {
     1:"Macomb", 2:"Oakland"
 }
+
+# Counties in our data
 locations = {
     "alameda":(37.811, -122.33, 10.0),
     "annearundel":(38.98, -76.48, 0.0),
@@ -106,6 +110,7 @@ locations = {
     "westchester":(42.0166666,-73.9166666,12.0),
     "worcester":(42.2706,-71.8731,304.8)
 }
+
 
 def getInputs():
     print("Welcome to COVID19 Case Growth predictor.\nTo get started please choose a state of the simulation.")
@@ -166,37 +171,51 @@ def getInputs():
             county = int(input("Enter the number of the county: "))
             latitude, longitude, elevation = locations[MI_counties[county].lower().replace(" ", "")]
     else:
+        print('Only one county in this state')
         if state == 5:
+            print('Choosing cuyahoga in', state_option[state])
             latitude,longitude,elevation = locations['cuyahoga']
         elif state == 7:
+            print('Choosing denver in', state_option[state])
             latitude,longitude,elevation = locations['denver']
         elif state == 11:
+            print('Choosing fultown', state_option[state])
             latitude,longitude,elevation = locations['fultown']
         elif state == 12:
+            print('Choosing king', state_option[state])
             latitude,longitude,elevation = locations['king']
         elif state == 14:
+            print('Choosing philadelphia', state_option[state])
             latitude,longitude,elevation = locations['philadelphia']
         elif state == 16:
+            print('Choosing marion', state_option[state])
             latitude,longitude,elevation = locations['marion']
         elif state == 17:
+            print('Choosing milwaukee', state_option[state])
             latitude,longitude,elevation = locations['milwaukee']
         elif state == 18:
+            print('Choosing minnehana', state_option[state])
             latitude,longitude,elevation = locations['minnehana']
         elif state == 19:
+            print('Choosing orleans', state_option[state])
             latitude,longitude,elevation = locations['orleans']
         elif state == 20:
+            print('Choosing worcester', state_option[state])
             latitude,longitude,elevation = locations['worcester']
         elif state == 21:
+            print('Choosing providence', state_option[state])
             latitude,longitude,elevation = locations['providence']
         elif state == 22:
+            print('Choosing saltlake', state_option[state])
             latitude,longitude,elevation = locations['saltlake']
         elif state == 23:
+            print('Choosing sussex', state_option[state])
             latitude,longitude,elevation = locations['sussex']
             
-    temperature = float(input("Enter the temperature in Fahrenheits: "))
-    wind = float(input("Enter the wind speed: "))
-    rain = float(input("Enter the rain amount: "))
-    initCases = int(input("Enter the starting number of cases: "))
+    temperature = float(input("Enter the temperature (Fahrenheit): "))
+    wind = float(input("Enter the wind speed (mph): "))
+    rain = float(input("Enter the rainfall amount (precipitation in mm): "))
+    initCases = int(input("Enter the starting number of COVID-19 cases: "))
     return latitude, longitude, elevation, temperature, wind, rain, initCases
 
 def main():

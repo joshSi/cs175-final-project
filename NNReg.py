@@ -2,11 +2,11 @@
 
 import numpy as np 
 import pandas as pd 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsRegressor as KNN
 from sklearn.neural_network import MLPRegressor
 from sklearn.feature_selection import VarianceThreshold
-import mltools as ml
+from mltools import rescale
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
@@ -28,8 +28,8 @@ data = np.genfromtxt('final.csv', delimiter = ",")
 X = data[1:data.shape[0]-1, 1:data.shape[1]-1]
 Y = data[1:data.shape[0]-1, data.shape[1]-1:data.shape[1]]/100
 Xtr, Xte, Ytr, Yte = train_test_split(X, Y, test_size=0.2, random_state = 1)
-Xtr, params  = ml.rescale(Xtr)
-Xte, _  = ml.rescale(Xte, params)
+Xtr, params  = rescale(Xtr)
+Xte, _  = rescale(Xte, params)
 
 # Evaluating performance of models
 '''

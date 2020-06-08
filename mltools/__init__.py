@@ -9,8 +9,8 @@ from .base import *
 from . import transforms 
 from .transforms import rescale        # useful to have at top namespace
 
-# import "plot" functions into main namespace
-from .plot import *
+# import "plot" functions into main namespace, uncomment for plot
+# from .plot import *
 
 # import classifiers into sub-namespaces
 try: from . import bayes
