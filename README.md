@@ -2,6 +2,10 @@
 
 Team: Jose Maldonado, Nomin Amgalan, Joshua Si
 
+## Roadmap
+
+`Final Report.pdf` is our project report
+
 `src` directory contains source code
 
 `Graphs` contains our graphs from comparing data and our models
@@ -22,7 +26,7 @@ To run our sample source, open predictingCases.py:
 
 Proceed to enter input, and it will return predictions on COVID-19 growth rates using our Neural Network and Linear Regression models.
 
-![alt text](sample_output.png)
+![alt text](Data/sample_output.png)
 
 ## Sources:
 
