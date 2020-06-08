@@ -6,8 +6,8 @@ state, county, weather attributes and initial case number, which they will
 follow through to correctly use the predictor 
 
 '''
-import NNReg
-import LinearReg
+from src import NNReg
+from src import LinearReg
 import numpy as np 
 
 # States
@@ -231,12 +231,13 @@ def main():
             "\nWind: ", wind, "\nRain: ", rain, "\nInitial Cases: ", initCases, "\n--------------\n")
 
     pred = np.array([[latitude, longitude, elevation, temperature, wind, rain]])
-    nnetPrediction = NNReg.traingAndPredictCases(pred)
+    nnetPrediction = NNReg.trainAndPredictCases(pred)
     linPrediction = LinearReg.trainAndPredictCases(pred)
     nnetPrediction = round(nnetPrediction[0], 4)*100
     linPrediction = round(linPrediction[0][0], 4)*100
 
-    msg = "In a week the cases would have changed by\n"+ str(nnetPrediction)+"% (Neural Network)\n"+str(linPrediction)+"% (Linear Regression)"
+    msg = "In a week the cases would have changed by\n"+ str(nnetPrediction)+"% (Neural Network)\n"+\
+        str(linPrediction)+"% (Linear Regression)\n"
     print(msg)
 
 if __name__=="__main__":
